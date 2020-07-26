@@ -1,4 +1,4 @@
-module gotools
+module github.com/DERVdice/gotools
 
 go 1.14
 
