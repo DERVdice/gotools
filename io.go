@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"log"
 	"os"
+
+	"github.com/plandem/xlsx"
 )
 
 // Построчное чтение из файла в массив
@@ -52,5 +54,35 @@ func OutputCSV(fileName string, headers []string, values [][]string) (err error)
 		}
 	}
 	w.Flush()
+	return
+}
+
+// Вывод данных в XLSX
+func OutputXSLX(fileName string, headers []string, values [][]interface{}) (err error) {
+	file := xlsx.New()
+	defer file.Close()
+
+	s := file.AddSheet("sheet 1")
+
+	// Выставляем заголовки
+	for i := range headers {
+		err = s.Col(i).Cell(0).SetText(headers[i])
+		if err != nil {
+			return
+		}
+	}
+
+	// Записываем данные
+	for i := range values {
+		for k := range values[i] {
+			s.Col(k).Cell(i + 1).SetValue(values[i][k])
+		}
+	}
+
+	err = file.SaveAs(fileName)
+	if err != nil {
+		return
+	}
+
 	return
 }
